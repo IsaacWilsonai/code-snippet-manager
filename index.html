@@ -32,7 +32,20 @@
             </section>
             
             <section class="snippets-list">
-                <h2>My Snippets</h2>
+                <div class="search-section">
+                    <h2>My Snippets</h2>
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Search snippets...">
+                        <select id="languageFilter">
+                            <option value="">All Languages</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="java">Java</option>
+                        </select>
+                    </div>
+                </div>
                 <div id="snippetsList"></div>
             </section>
         </div>

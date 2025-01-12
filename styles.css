@@ -41,6 +41,20 @@ header {
     padding-bottom: 0.5rem;
 }
 
+.search-section {
+    margin-bottom: 1.5rem;
+}
+
+.search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.search-bar input, .search-bar select {
+    flex: 1;
+}
+
 #snippetForm {
     display: flex;
     flex-direction: column;
@@ -81,8 +95,105 @@ button:hover {
     transform: translateY(-2px);
 }
 
+.snippet {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    transition: box-shadow 0.3s;
+}
+
+.snippet:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.snippet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.snippet-header h3 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.language-tag {
+    background: #667eea;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.snippet pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.snippet-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: #e2e8f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: #4a5568;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actions button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.delete-btn {
+    background: #e53e3e !important;
+}
+
+.delete-btn:hover {
+    background: #c53030 !important;
+}
+
+.no-snippets {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 2rem;
+}
+
 @media (max-width: 768px) {
     .container {
         grid-template-columns: 1fr;
+    }
+    
+    .snippet-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
     }
 }

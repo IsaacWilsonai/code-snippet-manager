@@ -1,6 +1,7 @@
 class SnippetManager {
     constructor() {
         this.snippets = JSON.parse(localStorage.getItem('codeSnippets')) || [];
+        this.filteredSnippets = this.snippets;
         this.init();
     }
     
@@ -12,6 +13,12 @@ class SnippetManager {
     bindEvents() {
         const form = document.getElementById('snippetForm');
         form.addEventListener('submit', (e) => this.handleSubmit(e));
+        
+        const searchInput = document.getElementById('searchInput');
+        const languageFilter = document.getElementById('languageFilter');
+        
+        searchInput.addEventListener('input', () => this.filterSnippets());
+        languageFilter.addEventListener('change', () => this.filterSnippets());
     }
     
     handleSubmit(e) {
@@ -38,22 +45,43 @@ class SnippetManager {
     addSnippet(snippet) {
         this.snippets.unshift(snippet);
         this.saveToStorage();
-        this.renderSnippets();
+        this.filterSnippets();
     }
     
     saveToStorage() {
         localStorage.setItem('codeSnippets', JSON.stringify(this.snippets));
     }
     
+    filterSnippets() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const languageFilter = document.getElementById('languageFilter').value;
+        
+        this.filteredSnippets = this.snippets.filter(snippet => {
+            const matchesSearch = snippet.title.toLowerCase().includes(searchTerm) ||
+                                snippet.code.toLowerCase().includes(searchTerm) ||
+                                snippet.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+            
+            const matchesLanguage = !languageFilter || snippet.language === languageFilter;
+            
+            return matchesSearch && matchesLanguage;
+        });
+        
+        this.renderSnippets();
+    }
+    
     renderSnippets() {
         const container = document.getElementById('snippetsList');
         
-        if (this.snippets.length === 0) {
-            container.innerHTML = '<p class="no-snippets">No snippets yet. Add your first one!</p>';
+        if (this.filteredSnippets.length === 0) {
+            if (this.snippets.length === 0) {
+                container.innerHTML = '<p class="no-snippets">No snippets yet. Add your first one!</p>';
+            } else {
+                container.innerHTML = '<p class="no-snippets">No snippets match your search.</p>';
+            }
             return;
         }
         
-        container.innerHTML = this.snippets.map(snippet => this.createSnippetHTML(snippet)).join('');
+        container.innerHTML = this.filteredSnippets.map(snippet => this.createSnippetHTML(snippet)).join('');
     }
     
     createSnippetHTML(snippet) {
@@ -96,7 +124,7 @@ class SnippetManager {
         if (confirm('Are you sure you want to delete this snippet?')) {
             this.snippets = this.snippets.filter(s => s.id != id);
             this.saveToStorage();
-            this.renderSnippets();
+            this.filterSnippets();
         }
     }
     
