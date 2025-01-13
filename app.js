@@ -19,6 +19,14 @@ class SnippetManager {
         
         searchInput.addEventListener('input', () => this.filterSnippets());
         languageFilter.addEventListener('change', () => this.filterSnippets());
+        
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const importFile = document.getElementById('importFile');
+        
+        exportBtn.addEventListener('click', () => this.exportSnippets());
+        importBtn.addEventListener('click', () => importFile.click());
+        importFile.addEventListener('change', (e) => this.importSnippets(e));
     }
     
     handleSubmit(e) {
@@ -126,6 +134,51 @@ class SnippetManager {
             this.saveToStorage();
             this.filterSnippets();
         }
+    }
+    
+    exportSnippets() {
+        const dataStr = JSON.stringify(this.snippets, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `snippets-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        alert('Snippets exported successfully!');
+    }
+    
+    importSnippets(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedSnippets = JSON.parse(e.target.result);
+                
+                if (!Array.isArray(importedSnippets)) {
+                    throw new Error('Invalid file format');
+                }
+                
+                const newSnippets = importedSnippets.filter(snippet => 
+                    !this.snippets.some(existing => existing.id === snippet.id)
+                );
+                
+                this.snippets = [...newSnippets, ...this.snippets];
+                this.saveToStorage();
+                this.filterSnippets();
+                
+                alert(`Imported ${newSnippets.length} new snippets!`);
+            } catch (error) {
+                alert('Error importing file: ' + error.message);
+            }
+        };
+        
+        reader.readAsText(file);
+        event.target.value = '';
     }
     
     clearForm() {

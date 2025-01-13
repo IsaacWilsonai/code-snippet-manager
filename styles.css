@@ -55,6 +55,22 @@ header {
     flex: 1;
 }
 
+.export-import-section {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.export-import-section button {
+    background: #38a169;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+}
+
+.export-import-section button:hover {
+    background: #2f855a;
+}
+
 #snippetForm {
     display: flex;
     flex-direction: column;
