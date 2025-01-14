@@ -8,6 +8,11 @@ class SnippetManager {
     init() {
         this.bindEvents();
         this.renderSnippets();
+        
+        // Initialize syntax highlighting if hljs is available
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightAll();
+        }
     }
     
     bindEvents() {
@@ -90,6 +95,13 @@ class SnippetManager {
         }
         
         container.innerHTML = this.filteredSnippets.map(snippet => this.createSnippetHTML(snippet)).join('');
+        
+        // Apply syntax highlighting to new content
+        if (typeof hljs !== 'undefined') {
+            container.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        }
     }
     
     createSnippetHTML(snippet) {
@@ -99,7 +111,7 @@ class SnippetManager {
                     <h3>${snippet.title}</h3>
                     <span class="language-tag">${snippet.language || 'Plain Text'}</span>
                 </div>
-                <pre><code>${this.escapeHTML(snippet.code)}</code></pre>
+                <pre><code class="language-${snippet.language || 'plaintext'}">${this.escapeHTML(snippet.code)}</code></pre>
                 <div class="snippet-footer">
                     <div class="tags">
                         ${snippet.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}

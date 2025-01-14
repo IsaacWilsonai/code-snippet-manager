@@ -205,11 +205,52 @@ button:hover {
 @media (max-width: 768px) {
     .container {
         grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 0.5rem;
+        margin: 1rem auto;
+    }
+    
+    .add-snippet, .snippets-list {
+        padding: 1rem;
+    }
+    
+    .search-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .export-import-section {
+        flex-direction: column;
+        gap: 0.5rem;
     }
     
     .snippet-footer {
         flex-direction: column;
         gap: 0.5rem;
         align-items: flex-start;
+    }
+    
+    .actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 1rem 0;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    textarea {
+        min-height: 100px;
+    }
+    
+    .snippet pre {
+        font-size: 0.8rem;
+        padding: 0.8rem;
     }
 }
