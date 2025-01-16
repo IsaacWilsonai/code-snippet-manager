@@ -2,6 +2,7 @@ class SnippetManager {
     constructor() {
         this.snippets = JSON.parse(localStorage.getItem('codeSnippets')) || [];
         this.filteredSnippets = this.snippets;
+        this.editingId = null;
         this.init();
     }
     
@@ -42,23 +43,53 @@ class SnippetManager {
         const code = document.getElementById('code').value;
         const tags = document.getElementById('tags').value;
         
-        const snippet = {
-            id: Date.now(),
-            title,
-            language,
-            code,
-            tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-            createdAt: new Date().toISOString()
-        };
+        if (this.editingId) {
+            // Update existing snippet
+            const snippetIndex = this.snippets.findIndex(s => s.id === this.editingId);
+            if (snippetIndex !== -1) {
+                this.snippets[snippetIndex] = {
+                    ...this.snippets[snippetIndex],
+                    title,
+                    language,
+                    code,
+                    tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+                    updatedAt: new Date().toISOString()
+                };
+            }
+            this.editingId = null;
+            document.querySelector('#snippetForm button[type="submit"]').textContent = 'Save Snippet';
+        } else {
+            // Create new snippet
+            const snippet = {
+                id: Date.now(),
+                title,
+                language,
+                code,
+                tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+                createdAt: new Date().toISOString()
+            };
+            this.snippets.unshift(snippet);
+        }
         
-        this.addSnippet(snippet);
+        this.saveToStorage();
+        this.filterSnippets();
         this.clearForm();
     }
     
-    addSnippet(snippet) {
-        this.snippets.unshift(snippet);
-        this.saveToStorage();
-        this.filterSnippets();
+    editSnippet(id) {
+        const snippet = this.snippets.find(s => s.id == id);
+        if (snippet) {
+            document.getElementById('title').value = snippet.title;
+            document.getElementById('language').value = snippet.language || '';
+            document.getElementById('code').value = snippet.code;
+            document.getElementById('tags').value = snippet.tags.join(', ');
+            
+            this.editingId = parseInt(id);
+            document.querySelector('#snippetForm button[type="submit"]').textContent = 'Update Snippet';
+            
+            // Scroll to form
+            document.getElementById('snippetForm').scrollIntoView({ behavior: 'smooth' });
+        }
     }
     
     saveToStorage() {
@@ -118,6 +149,7 @@ class SnippetManager {
                     </div>
                     <div class="actions">
                         <button onclick="snippetManager.copySnippet('${snippet.id}')">Copy</button>
+                        <button onclick="snippetManager.editSnippet('${snippet.id}')" class="edit-btn">Edit</button>
                         <button onclick="snippetManager.deleteSnippet('${snippet.id}')" class="delete-btn">Delete</button>
                     </div>
                 </div>
@@ -195,6 +227,8 @@ class SnippetManager {
     
     clearForm() {
         document.getElementById('snippetForm').reset();
+        this.editingId = null;
+        document.querySelector('#snippetForm button[type="submit"]').textContent = 'Save Snippet';
     }
 }
 

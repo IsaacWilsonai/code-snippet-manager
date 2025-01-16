@@ -187,6 +187,14 @@ button:hover {
     border-radius: 4px;
 }
 
+.edit-btn {
+    background: #3182ce !important;
+}
+
+.edit-btn:hover {
+    background: #2c5aa0 !important;
+}
+
 .delete-btn {
     background: #e53e3e !important;
 }
