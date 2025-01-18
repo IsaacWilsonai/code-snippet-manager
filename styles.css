@@ -127,13 +127,20 @@ button:hover {
 .snippet-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 0.5rem;
 }
 
-.snippet-header h3 {
+.snippet-title-section h3 {
     color: #333;
     font-size: 1.1rem;
+    margin: 0;
+}
+
+.snippet-date {
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
 }
 
 .language-tag {

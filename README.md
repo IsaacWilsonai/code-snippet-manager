@@ -26,6 +26,11 @@ A simple web-based tool to manage and organize your code snippets.
 4. Add tags separated by commas (optional)
 5. Click "Save Snippet"
 
+### Managing Snippets
+- **Edit**: Click the "Edit" button to modify existing snippets
+- **Copy**: Click "Copy" to copy code to clipboard
+- **Delete**: Remove snippets you no longer need
+
 ### Searching
 - Use the search box to find snippets by title, content, or tags
 - Use the language dropdown to filter by programming language
@@ -35,6 +40,12 @@ A simple web-based tool to manage and organize your code snippets.
 - Click "Export Snippets" to download a JSON file with all your snippets
 - Click "Import Snippets" to load snippets from a JSON file
 - Importing will add new snippets without duplicating existing ones
+
+### Keyboard Shortcuts
+- `Ctrl/Cmd + S`: Focus on add snippet form
+- `Ctrl/Cmd + F`: Focus on search box
+- `Ctrl/Cmd + E`: Export snippets
+- `Escape`: Clear/cancel form
 
 ## Browser Support
 

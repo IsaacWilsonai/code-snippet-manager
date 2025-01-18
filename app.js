@@ -33,6 +33,9 @@ class SnippetManager {
         exportBtn.addEventListener('click', () => this.exportSnippets());
         importBtn.addEventListener('click', () => importFile.click());
         importFile.addEventListener('change', (e) => this.importSnippets(e));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
     }
     
     handleSubmit(e) {
@@ -139,7 +142,10 @@ class SnippetManager {
         return `
             <div class="snippet" data-id="${snippet.id}">
                 <div class="snippet-header">
-                    <h3>${snippet.title}</h3>
+                    <div class="snippet-title-section">
+                        <h3>${snippet.title}</h3>
+                        <small class="snippet-date">${this.formatDate(snippet.createdAt)}</small>
+                    </div>
                     <span class="language-tag">${snippet.language || 'Plain Text'}</span>
                 </div>
                 <pre><code class="language-${snippet.language || 'plaintext'}">${this.escapeHTML(snippet.code)}</code></pre>
@@ -155,6 +161,17 @@ class SnippetManager {
                 </div>
             </div>
         `;
+    }
+    
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
     
     escapeHTML(text) {
@@ -223,6 +240,31 @@ class SnippetManager {
         
         reader.readAsText(file);
         event.target.value = '';
+    }
+    
+    handleKeyboardShortcuts(e) {
+        // Ctrl/Cmd + S to focus on save form
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            document.getElementById('title').focus();
+        }
+        
+        // Ctrl/Cmd + F to focus on search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+            e.preventDefault();
+            document.getElementById('searchInput').focus();
+        }
+        
+        // Ctrl/Cmd + E to export
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+            e.preventDefault();
+            this.exportSnippets();
+        }
+        
+        // Escape to clear form
+        if (e.key === 'Escape') {
+            this.clearForm();
+        }
     }
     
     clearForm() {
