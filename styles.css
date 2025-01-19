@@ -45,6 +45,25 @@ header {
     margin-bottom: 1.5rem;
 }
 
+.snippets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.snippets-header h2 {
+    margin-bottom: 0;
+}
+
+.snippet-count {
+    background: #f0f0f0;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
 .search-bar {
     display: flex;
     gap: 1rem;
@@ -69,6 +88,60 @@ header {
 
 .export-import-section button:hover {
     background: #2f855a;
+}
+
+.filter-section {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.filter-btn {
+    background: #e2e8f0;
+    color: #4a5568;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.filter-btn:hover {
+    background: #cbd5e0;
+}
+
+.filter-btn.active:hover {
+    background: #5a67d8;
+}
+
+.star-icon {
+    color: #f6e05e;
+    margin-right: 0.3rem;
+}
+
+.favorite-btn {
+    background: transparent !important;
+    color: #ccc;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem !important;
+    border: 1px solid #ccc;
+}
+
+.favorite-btn.favorited {
+    color: #f6e05e !important;
+    border-color: #f6e05e;
+}
+
+.favorite-btn:hover {
+    color: #f6e05e !important;
+    border-color: #f6e05e !important;
+    transform: none !important;
 }
 
 #snippetForm {
@@ -155,11 +228,52 @@ button:hover {
 .snippet pre {
     background: #2d3748;
     color: #e2e8f0;
-    padding: 1rem;
+    padding: 0;
     border-radius: 5px;
     overflow-x: auto;
     margin: 0.5rem 0;
     font-size: 0.9rem;
+    position: relative;
+}
+
+.snippet pre code {
+    display: block;
+    padding: 1rem;
+    line-height: 1.5;
+}
+
+.code-header {
+    background: #1a202c;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #4a5568;
+    font-size: 0.8rem;
+    color: #a0aec0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.code-with-lines {
+    display: flex;
+}
+
+.line-numbers {
+    background: #2d3748;
+    color: #666;
+    padding: 1rem 0.5rem;
+    border-right: 1px solid #4a5568;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    text-align: right;
+    user-select: none;
+    min-width: 2rem;
+    flex-shrink: 0;
+}
+
+.code-with-lines pre {
+    flex: 1;
+    margin: 0;
+    background: transparent;
 }
 
 .snippet-footer {

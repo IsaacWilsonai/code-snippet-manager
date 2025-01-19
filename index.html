@@ -45,7 +45,10 @@
             
             <section class="snippets-list">
                 <div class="search-section">
-                    <h2>My Snippets</h2>
+                    <div class="snippets-header">
+                        <h2>My Snippets</h2>
+                        <span id="snippetCount" class="snippet-count">0 snippets</span>
+                    </div>
                     <div class="search-bar">
                         <input type="text" id="searchInput" placeholder="Search snippets...">
                         <select id="languageFilter">
@@ -66,6 +69,10 @@
                             <option value="bash">Bash</option>
                             <option value="sql">SQL</option>
                         </select>
+                    </div>
+                    <div class="filter-section">
+                        <button id="showFavoritesBtn" class="filter-btn">★ Favorites Only</button>
+                        <button id="showAllBtn" class="filter-btn active">All Snippets</button>
                     </div>
                     <div class="export-import-section">
                         <button id="exportBtn">Export Snippets</button>

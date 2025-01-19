@@ -3,6 +3,7 @@ class SnippetManager {
         this.snippets = JSON.parse(localStorage.getItem('codeSnippets')) || [];
         this.filteredSnippets = this.snippets;
         this.editingId = null;
+        this.showFavoritesOnly = false;
         this.init();
     }
     
@@ -33,6 +34,12 @@ class SnippetManager {
         exportBtn.addEventListener('click', () => this.exportSnippets());
         importBtn.addEventListener('click', () => importFile.click());
         importFile.addEventListener('change', (e) => this.importSnippets(e));
+        
+        const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+        const showAllBtn = document.getElementById('showAllBtn');
+        
+        showFavoritesBtn.addEventListener('click', () => this.toggleFavoriteFilter(true));
+        showAllBtn.addEventListener('click', () => this.toggleFavoriteFilter(false));
         
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
@@ -69,7 +76,8 @@ class SnippetManager {
                 language,
                 code,
                 tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                favorite: false
             };
             this.snippets.unshift(snippet);
         }
@@ -99,6 +107,19 @@ class SnippetManager {
         localStorage.setItem('codeSnippets', JSON.stringify(this.snippets));
     }
     
+    toggleFavoriteFilter(showFavoritesOnly) {
+        this.showFavoritesOnly = showFavoritesOnly;
+        
+        // Update button states
+        const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+        const showAllBtn = document.getElementById('showAllBtn');
+        
+        showFavoritesBtn.classList.toggle('active', showFavoritesOnly);
+        showAllBtn.classList.toggle('active', !showFavoritesOnly);
+        
+        this.filterSnippets();
+    }
+    
     filterSnippets() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const languageFilter = document.getElementById('languageFilter').value;
@@ -109,8 +130,9 @@ class SnippetManager {
                                 snippet.tags.some(tag => tag.toLowerCase().includes(searchTerm));
             
             const matchesLanguage = !languageFilter || snippet.language === languageFilter;
+            const matchesFavorite = !this.showFavoritesOnly || snippet.favorite;
             
-            return matchesSearch && matchesLanguage;
+            return matchesSearch && matchesLanguage && matchesFavorite;
         });
         
         this.renderSnippets();
@@ -118,6 +140,9 @@ class SnippetManager {
     
     renderSnippets() {
         const container = document.getElementById('snippetsList');
+        
+        // Update snippet count
+        this.updateSnippetCount();
         
         if (this.filteredSnippets.length === 0) {
             if (this.snippets.length === 0) {
@@ -138,22 +163,49 @@ class SnippetManager {
         }
     }
     
+    updateSnippetCount() {
+        const countElement = document.getElementById('snippetCount');
+        const total = this.snippets.length;
+        const filtered = this.filteredSnippets.length;
+        
+        if (total === filtered) {
+            countElement.textContent = `${total} snippet${total !== 1 ? 's' : ''}`;
+        } else {
+            countElement.textContent = `${filtered} of ${total} snippet${total !== 1 ? 's' : ''}`;
+        }
+    }
+    
     createSnippetHTML(snippet) {
         return `
             <div class="snippet" data-id="${snippet.id}">
                 <div class="snippet-header">
                     <div class="snippet-title-section">
-                        <h3>${snippet.title}</h3>
+                        <h3>
+                            ${snippet.favorite ? '<span class="star-icon">★</span>' : ''} 
+                            ${snippet.title}
+                        </h3>
                         <small class="snippet-date">${this.formatDate(snippet.createdAt)}</small>
                     </div>
                     <span class="language-tag">${snippet.language || 'Plain Text'}</span>
                 </div>
-                <pre><code class="language-${snippet.language || 'plaintext'}">${this.escapeHTML(snippet.code)}</code></pre>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>${snippet.language || 'Plain Text'}</span>
+                        <span>${snippet.code.split('\n').length} lines</span>
+                    </div>
+                    <div class="code-with-lines">
+                        <div class="line-numbers">${this.generateLineNumbers(snippet.code)}</div>
+                        <pre><code class="language-${snippet.language || 'plaintext'}">${this.escapeHTML(snippet.code)}</code></pre>
+                    </div>
+                </div>
                 <div class="snippet-footer">
                     <div class="tags">
                         ${snippet.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
                     <div class="actions">
+                        <button onclick="snippetManager.toggleFavorite('${snippet.id}')" class="favorite-btn ${snippet.favorite ? 'favorited' : ''}">
+                            ${snippet.favorite ? '★' : '☆'}
+                        </button>
                         <button onclick="snippetManager.copySnippet('${snippet.id}')">Copy</button>
                         <button onclick="snippetManager.editSnippet('${snippet.id}')" class="edit-btn">Edit</button>
                         <button onclick="snippetManager.deleteSnippet('${snippet.id}')" class="delete-btn">Delete</button>
@@ -174,6 +226,11 @@ class SnippetManager {
         });
     }
     
+    generateLineNumbers(code) {
+        const lines = code.split('\n').length;
+        return Array.from({length: lines}, (_, i) => i + 1).join('\n');
+    }
+    
     escapeHTML(text) {
         const div = document.createElement('div');
         div.textContent = text;
@@ -186,6 +243,15 @@ class SnippetManager {
             navigator.clipboard.writeText(snippet.code).then(() => {
                 alert('Snippet copied to clipboard!');
             });
+        }
+    }
+    
+    toggleFavorite(id) {
+        const snippet = this.snippets.find(s => s.id == id);
+        if (snippet) {
+            snippet.favorite = !snippet.favorite;
+            this.saveToStorage();
+            this.filterSnippets();
         }
     }
     
