@@ -70,7 +70,11 @@ header {
     margin-top: 1rem;
 }
 
-.search-bar input, .search-bar select {
+.search-bar input {
+    flex: 2;
+}
+
+.search-bar select {
     flex: 1;
 }
 

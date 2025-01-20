@@ -24,8 +24,11 @@ class SnippetManager {
         const searchInput = document.getElementById('searchInput');
         const languageFilter = document.getElementById('languageFilter');
         
+        const sortBy = document.getElementById('sortBy');
+        
         searchInput.addEventListener('input', () => this.filterSnippets());
         languageFilter.addEventListener('change', () => this.filterSnippets());
+        sortBy.addEventListener('change', () => this.filterSnippets());
         
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
@@ -123,6 +126,7 @@ class SnippetManager {
     filterSnippets() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const languageFilter = document.getElementById('languageFilter').value;
+        const sortBy = document.getElementById('sortBy').value;
         
         this.filteredSnippets = this.snippets.filter(snippet => {
             const matchesSearch = snippet.title.toLowerCase().includes(searchTerm) ||
@@ -135,7 +139,36 @@ class SnippetManager {
             return matchesSearch && matchesLanguage && matchesFavorite;
         });
         
+        // Sort the filtered snippets
+        this.sortSnippets(sortBy);
+        
         this.renderSnippets();
+    }
+    
+    sortSnippets(sortBy) {
+        switch(sortBy) {
+            case 'oldest':
+                this.filteredSnippets.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                break;
+            case 'title':
+                this.filteredSnippets.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+                break;
+            case 'title-desc':
+                this.filteredSnippets.sort((a, b) => b.title.toLowerCase().localeCompare(a.title.toLowerCase()));
+                break;
+            case 'favorites':
+                this.filteredSnippets.sort((a, b) => {
+                    if (a.favorite === b.favorite) {
+                        return new Date(b.createdAt) - new Date(a.createdAt); // newest first for same favorite status
+                    }
+                    return b.favorite - a.favorite; // favorites first
+                });
+                break;
+            case 'newest':
+            default:
+                this.filteredSnippets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                break;
+        }
     }
     
     renderSnippets() {
