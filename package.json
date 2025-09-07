@@ -1,0 +1,17 @@
+{
+  "name": "code-snippet-manager",
+  "version": "1.0.0",
+  "description": "A simple tool to manage and organize code snippets",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8080",
+    "dev": "live-server"
+  },
+  "keywords": ["code", "snippets", "manager", "developer-tools"],
+  "author": "IsaacWilsonai",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2"
+  }
+}
